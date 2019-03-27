@@ -76,8 +76,11 @@ func TestVaultClient_TokenRenewals(t *testing.T) {
 		}(errCh)
 	}
 
-	if c.heap.Length() != num {
-		t.Fatalf("bad: heap length: expected: %d, actual: %d", num, c.heap.Length())
+	c.lock.Lock()
+	length := c.heap.Length()
+	c.lock.Unlock()
+	if length != num {
+		t.Fatalf("bad: heap length: expected: %d, actual: %d", num, length)
 	}
 
 	time.Sleep(time.Duration(testutil.TestMultiplier()) * time.Second)
@@ -88,8 +91,11 @@ func TestVaultClient_TokenRenewals(t *testing.T) {
 		}
 	}
 
-	if c.heap.Length() != 0 {
-		t.Fatalf("bad: heap length: expected: 0, actual: %d", c.heap.Length())
+	c.lock.Lock()
+	length = c.heap.Length()
+	c.lock.Unlock()
+	if length != 0 {
+		t.Fatalf("bad: heap length: expected: 0, actual: %d", length)
 	}
 }
 
